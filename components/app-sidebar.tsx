@@ -14,22 +14,37 @@ import {
 	SidebarRail,
 } from '@/components/ui/sidebar'
 import { VersionSwitcher } from '@/components/version-switcher'
+import Link from 'next/link'
 
 // This is sample data.
 const data = {
 	versions: ['1.0.1', '1.1.0-alpha', '2.0.0-beta1'],
 	navMain: [
 		{
-			title: 'Getting Started',
-			url: '#',
+			title: 'Mails',
+			url: '/mails',
 			items: [
 				{
-					title: 'Installation',
-					url: '#',
+					title: 'Inbox',
+					url: '/inbox',
 				},
 				{
 					title: 'Project Structure',
-					url: '#',
+					url: '/',
+				},
+			],
+		},
+		{
+			title: 'Labels',
+			url: '/labels',
+			items: [
+				{
+					title: 'System Labels',
+					url: '/labels/system',
+				},
+				{
+					title: 'User Labels',
+					url: '/labels/user',
 				},
 			],
 		},
@@ -170,7 +185,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 											asChild
 											isActive={item.isActive}
 										>
-											<a href={item.url}>{item.title}</a>
+											<Link href={item.url}>
+												{item.title}
+											</Link>
 										</SidebarMenuButton>
 									</SidebarMenuItem>
 								))}
