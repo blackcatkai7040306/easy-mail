@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react'
 
 import { SearchForm } from '@/components/search-form'
@@ -15,6 +17,7 @@ import {
 } from '@/components/ui/sidebar'
 import { VersionSwitcher } from '@/components/version-switcher'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 // This is sample data.
 const data = {
@@ -39,12 +42,8 @@ const data = {
 			url: '/labels',
 			items: [
 				{
-					title: 'System Labels',
-					url: '/labels/system',
-				},
-				{
-					title: 'User Labels',
-					url: '/labels/user',
+					title: 'Labels',
+					url: '/labels',
 				},
 			],
 		},
@@ -163,6 +162,8 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+	const pathname = usePathname()
+
 	return (
 		<Sidebar {...props}>
 			<SidebarHeader>
@@ -183,7 +184,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 									<SidebarMenuItem key={item.title}>
 										<SidebarMenuButton
 											asChild
-											isActive={item.isActive}
+											isActive={pathname === item.url}
 										>
 											<Link href={item.url}>
 												{item.title}
