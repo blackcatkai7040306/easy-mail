@@ -3,7 +3,6 @@ import Image from 'next/image'
 
 import { auth } from '@/auth'
 import { DataTable } from '@/components/data-table'
-import { UserNav } from '@/components/user-nav'
 import { columns } from './columns'
 
 export const metadata: Metadata = {
@@ -58,9 +57,9 @@ export default async function TaskPage() {
 							to manage!
 						</p>
 					</div>
-					<div className="flex items-center space-x-2">
+					{/* <div className="flex items-center space-x-2">
 						<UserNav />
-					</div>
+					</div> */}
 				</div>
 				<DataTable data={labels} columns={columns} />
 			</div>
