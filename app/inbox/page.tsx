@@ -1,42 +1,20 @@
-import { promises as fs } from 'fs'
 import { Metadata } from 'next'
 import Image from 'next/image'
-import path from 'path'
-import { z } from 'zod'
 
 import { getInboxSenders } from '@/app/fetchers/messages'
-import { auth } from '@/auth'
-// import { columns } from '@/components/columns'
 import { columns } from '@/app/inbox/columns'
 import { DataTableToolbar } from '@/app/inbox/data-table-toolbar'
 import { DataTable } from '@/components/data-table'
 import { UserNav } from '@/components/user-nav'
-import { taskSchema } from '@/data/schema'
 
 export const metadata: Metadata = {
-	title: 'Tasks',
-	description: 'A task and issue tracker build using Tanstack Table.',
-}
-
-// Simulate a database read for tasks.
-async function getTasks() {
-	const data = await fs.readFile(
-		path.join(process.cwd(), './data/tasks.json')
-	)
-
-	const tasks = JSON.parse(data.toString())
-
-	return z.array(taskSchema).parse(tasks)
+	title: 'Inbox',
+	description: 'An Inbox mangement page.',
 }
 
 async function getMails() {
-	// const data = await fs.readFile(
-	// 	path.join(process.cwd(), './data/tasks.json')
-	// )
-
 	try {
 		const result = (await getInboxSenders()) ?? []
-		console.log('getInboxSenders, this is results....', result)
 		return (result as EmailsType[]) || []
 	} catch (err: any) {
 		console.log('error occured ...', err)
@@ -44,16 +22,10 @@ async function getMails() {
 }
 
 export default async function TaskPage() {
-	// const tasks = await getTasks()
-
-	const session = await auth()
-	// const labels = await fetchLabels(session?.accessToken as string)
 	const mails = (await getMails()) || []
-	console.log('Mails: ', session, mails)
 
 	return (
 		<>
-			{/* <MyMessages session={session} /> */}
 			<div className="md:hidden">
 				<Image
 					src="/examples/tasks-light.png"
@@ -77,7 +49,7 @@ export default async function TaskPage() {
 							Welcome back!
 						</h2>
 						<p className="text-muted-foreground">
-							Here&apos;s a list of your Mails to manage!
+							Here&apos;s a list of your Inbox to manage!
 						</p>
 					</div>
 					<div className="flex items-center space-x-2">
