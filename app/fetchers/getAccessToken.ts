@@ -1,6 +1,6 @@
-import { getSession } from 'next-auth/react'
+import { auth } from '@/auth'
 
 export const getAccessToken = async () => {
-	const session = await getSession()
+	const session = await auth()
 	return session?.accessToken
 }

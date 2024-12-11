@@ -1,8 +1,23 @@
 import { getAccessToken } from '@/app/fetchers/getAccessToken'
+import { extractValuesAsObject } from '@/lib/helper'
+
+const fetchLabels = async (accessToken: string) => {
+	const response = await fetch(
+		'https://gmail.googleapis.com/gmail/v1/users/me/labels',
+		{
+			headers: {
+				Authorization: `Bearer ${accessToken}`,
+			},
+		}
+	)
+
+	const data = await response.json()
+	return data.messages || [] // List of messages
+}
 
 const fetchMessages = async (accessToken: string) => {
 	const response = await fetch(
-		'https://gmail.googleapis.com/gmail/v1/users/me/messages?q=in:inbox&maxResults=10',
+		'https://gmail.googleapis.com/gmail/v1/users/me/messages',
 		{
 			headers: {
 				Authorization: `Bearer ${accessToken}`,
@@ -25,12 +40,11 @@ const fetchMessageDetails = async (accessToken: string, messageId: string) => {
 	)
 
 	const data = await response.json()
-	const headers = data.payload.headers as { name: string; value: string }[]
+	const headers =
+		(data.payload.headers as { name: string; value: string }[]) || []
 
-	// Extract 'From' field
-	console.log('headers are as follows: ' + headers)
-	const fromHeader = headers.find((header) => header.name === 'From')
-	return fromHeader?.value || 'Unknown'
+	const fromHeader = extractValuesAsObject(headers, ['From', 'Subject'])
+	return fromHeader || {}
 }
 
 const getInboxSenders = async () => {
@@ -39,14 +53,24 @@ const getInboxSenders = async () => {
 
 	const messages = await fetchMessages(accessToken)
 
-	const senders = await Promise.all(
-		messages.map(async (message: Record<string, string>) => {
-			const sender = await fetchMessageDetails(accessToken, message.id)
-			return sender
-		})
-	)
+	try {
+		const senders = (await Promise.all(
+			messages.map(async (message: Record<string, string>) => {
+				const sender = (await fetchMessageDetails(
+					accessToken,
+					message.id
+				)) as EmailsType
+				return sender
+			})
+		)) as EmailsType[]
 
-	return senders
+		return senders
+	} catch (error) {
+		console.error(
+			'getInboxSenders, Error occurred fetching senders:',
+			error
+		)
+	}
 }
 
-export { fetchMessageDetails, fetchMessages, getInboxSenders }
+export { fetchLabels, fetchMessageDetails, fetchMessages, getInboxSenders }
