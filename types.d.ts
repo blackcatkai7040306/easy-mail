@@ -15,3 +15,8 @@ type Color = {
 	backgroundColor: string
 	textColor: string
 }
+
+type EmailsType = {
+	From: string
+	Subject: string
+}

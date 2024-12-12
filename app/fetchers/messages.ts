@@ -41,7 +41,7 @@ const fetchMessageDetails = async (accessToken: string, messageId: string) => {
 
 	const data = await response.json()
 	const headers =
-		(data.payload.headers as { name: string; value: string }[]) || []
+		(data?.payload?.headers as { name: string; value: string }[]) || []
 
 	const fromHeader = extractValuesAsObject(headers, ['From', 'Subject'])
 	return fromHeader || {}
